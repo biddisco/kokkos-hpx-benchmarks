@@ -50,8 +50,8 @@
 
 int main(int argc, char* argv[]) {
 
-  int num_vectors = 1000; // number of vectors
-  int len  = 10000;       // length of vectors 
+  int num_vectors = 10000; // number of vectors
+  int len  = 100000;      // length of vectors
   int nrepeat = 10;       // number of repeats of the test
 
   // Read command line arguments

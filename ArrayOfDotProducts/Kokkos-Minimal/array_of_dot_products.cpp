@@ -51,8 +51,8 @@
 
 int main(int argc, char* argv[]) {
 
-  int num_vectors = 1000; // number of vectors
-  int len  = 10000;       // length of vectors 
+  int num_vectors = 10000; // number of vectors
+  int len  = 100000;      // length of vectors
   int nrepeat = 10;       // number of repeats of the test
 
   // Read command line arguments
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
   }
 
   Kokkos::initialize(argc,argv);
-
+  {
   // allocate space for vectors to do num_vectors dot products of length len
   double* a = new double[num_vectors*len];
   double* b = new double[num_vectors*len];
@@ -127,5 +127,6 @@ int main(int argc, char* argv[]) {
     printf("%i %i %e %lf %lf\n",num_vectors,len,time,1.0e-6*num_vectors*len*2*8,1.0e-9*num_vectors*len*2*8*nrepeat/time);
   }
   else printf("Error\n");
+}
   Kokkos::finalize();
 }

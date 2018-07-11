@@ -1,13 +1,13 @@
 /*
 //@HEADER
 // ************************************************************************
-//
+// 
 //                        Kokkos v. 2.0
 //              Copyright (2014) Sandia Corporation
-//
+// 
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-//
+// 
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Questions? Contact  H. Carter Edwards (hcedwar@sandia.gov)
-//
+// 
 // ************************************************************************
 //@HEADER
 */
@@ -50,8 +50,8 @@
 
 int main(int argc, char* argv[]) {
 
-  int num_vectors = 1000; // number of vectors
-  int len  = 10000;       // length of vectors
+  int num_vectors = 10000; // number of vectors
+  int len  = 100000;      // length of vectors
   int nrepeat = 10;       // number of repeats of the test
 
   // Read command line arguments
@@ -77,7 +77,6 @@ int main(int argc, char* argv[]) {
   double* b = new double[num_vectors*len];
   double* c = new double[num_vectors];
 
-
   // Initialize vectors
   #pragma omp parallel for
   for(int i = 0; i < num_vectors; i++) {
@@ -95,7 +94,7 @@ int main(int argc, char* argv[]) {
   gettimeofday(&begin,NULL);
 
   for(int repeat = 0; repeat < nrepeat; repeat++) {
-    // #pragma omp parallel for
+    #pragma omp parallel for
     for(int i = 0; i < num_vectors; i++) {
       double ctmp = 0.0;
       for(int j = 0; j < len; j++) {
@@ -114,7 +113,7 @@ int main(int argc, char* argv[]) {
   int error = 0;
   for(int i = 0; i < num_vectors; i++) {
     double diff = ((c[i] - 1.0*(i+1)*len*(len+1)/2))/((i+1)*len*(len+1)/2);
-    if ( diff*diff>1e-20 ) {
+    if ( diff*diff>1e-20 ) { 
       error = 1;
       printf("Error: %i %i %i %lf %lf %e %lf\n",i,num_vectors,len,c[i],1.0*(i+1)*len*(len+1)/2,c[i] - 1.0*(i+1)*len*(len+1)/2,diff);
     }
@@ -122,7 +121,7 @@ int main(int argc, char* argv[]) {
 
   // Print results (problem size, time and bandwidth in GB/s)
 
-  if(error==0) {
+  if(error==0) { 
     printf("#NumVector Length Time(s) ProblemSize(MB) Bandwidth(GB/s)\n");
     printf("%i %i %e %lf %lf\n",num_vectors,len,time,1.0e-6*num_vectors*len*2*8,1.0e-9*num_vectors*len*2*8*nrepeat/time);
   }
