@@ -51,13 +51,14 @@ int main(int argc, char *argv[]) {
   gettimeofday(&begin, NULL);
 
   for (int repeat = 0; repeat < nrepeat; repeat++) {
-    hpx::parallel::for_loop(hpx::parallel::execution::par, 0, nrepeat, {
-      double ctmp = 0.0;
-      for (int j = 0; j < len; j++) {
-        ctmp += a[i * len + j] * b[i * len + j];
-      }
-      c[i] = ctmp;
-    });
+    hpx::parallel::for_loop(hpx::parallel::execution::par, 0, num_vectors,
+                            [len, a, b, c](const size_t i) {
+                              double ctmp = 0.0;
+                              for (int j = 0; j < len; j++) {
+                                ctmp += a[i * len + j] * b[i * len + j];
+                              }
+                              c[i] = ctmp;
+                            });
   }
 
   gettimeofday(&end, NULL);
