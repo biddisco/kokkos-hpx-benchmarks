@@ -1,16 +1,20 @@
 #include <hpx/hpx_main.hpp>
+#include <hpx/include/iostreams.hpp>
 #include <hpx/include/parallel_for_loop.hpp>
 
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <sys/time.h>
+#include <unistd.h>
 
 int main(int argc, char *argv[]) {
   int num_vectors = 1000;
   int len = 10000;
   int nrepeat = 10;
+  bool header = false;
 
   for (int i = 0; i < argc; i++) {
     if ((strcmp(argv[i], "-v") == 0) ||
@@ -20,6 +24,8 @@ int main(int argc, char *argv[]) {
       len = atof(argv[++i]);
     } else if (strcmp(argv[i], "-nrepeat") == 0) {
       nrepeat = atoi(argv[++i]);
+    } else if (strcmp(argv[i], "-header") == 0) {
+      header = true;
     } else if ((strcmp(argv[i], "-h") == 0) ||
                (strcmp(argv[i], "-help") == 0)) {
       printf("ArrayOfDotProducts Options:\n");
@@ -29,6 +35,11 @@ int main(int argc, char *argv[]) {
       printf("  -help (-h):               print this message\n");
     }
   }
+
+  char hostname[HOST_NAME_MAX];
+  gethostname(hostname, HOST_NAME_MAX);
+  std::string benchmark = "arrays_of_dot_products";
+  std::string runtime = "HPX";
 
   // allocate space for vectors to do num_vectors dot products of length len
   double *a = new double[num_vectors * len];
@@ -80,15 +91,19 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  // Print results (problem size, time and bandwidth in GB/s)
+  if (error != 0) {
+    hpx::cerr << "Error!" << hpx::endl;
+  }
 
-  if (error == 0) {
-    printf("#NumVector Length Time(s) ProblemSize(MB) Bandwidth(GB/s)\n");
-    printf("%i %i %e %lf %lf\n", num_vectors, len, time,
-           1.0e-6 * num_vectors * len * 2 * 8,
-           1.0e-9 * num_vectors * len * 2 * 8 * nrepeat / time);
-  } else
-    printf("Error\n");
+  if (header) {
+    hpx::cout << "hostname, timestamp, num_threads, benchmark, runtime "
+                 "input_size_1, input_size_2, num_repeats, time, result"
+              << hpx::endl;
+  }
+  hpx::cout << hostname << ", " << std::time(nullptr) << ", "
+            << hpx::resource::get_num_threads("default") << ", " << benchmark
+            << ", " << runtime << ", " << len << ", " << num_vectors << ", "
+            << nrepeat << ", " << time << ", " << error << std::endl;
 
   return hpx::finalize();
 }
