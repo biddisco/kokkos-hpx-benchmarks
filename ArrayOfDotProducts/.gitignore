@@ -1,0 +1,10 @@
+*~
+*.swp
+build
+*.o
+*.a
+*.so
+*.so
+*.tmp
+*.out
+*.log
