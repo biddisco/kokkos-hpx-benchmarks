@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
-KOKKOS_PATH=""
-HPX_DIR=""
-KOKKOS_ARCH=""
-
-input_1_sizes=()
-input_2_sizes=()
-num_threads_values=()
+input_1_sizes=(10000 100000)
+input_2_sizes=(10000)
+num_threads_values=(1 2 4 9 18 36)
 
 output_path=$(pwd)
-output_file="$output_path"/$(date +%s)-$(git rev-parse HEAD)
+output_file="$output_path"/$(date +%s)-$(git rev-parse HEAD).log
 
-echo "hostname, timestamp, num_threads, benchmark, runtime, input_size_1, input_size_2, num_repeats, time, result" > "$output_file"
+echo "hostname, timestamp, num_threads, benchmark, runtime, input_size_1, input_size_2, num_repeats, time, specific_metric, metric_name, result" > "$output_file"
 
 for input_1_size in "${input_1_sizes[@]}"; do
     for input_2_size in "${input_2_sizes[@]}"; do
@@ -20,26 +16,32 @@ for input_1_size in "${input_1_sizes[@]}"; do
         echo $arguments
 
         pushd Serial
-        make KOKKOS_PATH="$KOKKOS_PATH"
         ./array_of_dot_products.host $arguments >> "$output_file"
         popd
 
         for num_threads in "${num_threads_values[@]}"; do
             echo "num_threads = $num_threads"
             pushd OpenMP
-            make KOKKOS_PATH="$KOKKOS_PATH"
             OMP_NUM_THREADS="$num_threads" OMP_PROC_BIND=spread OMP_PLACES=threads ./array_of_dot_products.host $arguments >> "$output_file"
             popd
 
+            pushd Kokkos-Minimal
+            ./array_of_dot_products.host.pthreads --kokkos-threads="$num_threads" $arguments >> "$output_file"
+            OMP_NUM_THREADS="$num_threads" OMP_PROC_BIND=spread OMP_PLACES=threads ./array_of_dot_products.host.openmp $arguments >> "$output_file"
+            popd
+
             pushd Kokkos-Flat
-            make KOKKOS_DEVICES=Pthreads KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_PATH="$KOKKOS_PATH"
-            ./array_of_dot_products.host --kokkos-threads="$num_threads" $arguments >> "$output_file"
+            ./array_of_dot_products.host.pthreads --kokkos-threads="$num_threads" $arguments >> "$output_file"
+            OMP_NUM_THREADS="$num_threads" OMP_PROC_BIND=spread OMP_PLACES=threads ./array_of_dot_products.host.openmp $arguments >> "$output_file"
+            popd
+
+            pushd Kokkos-Hierarchy
+            ./array_of_dot_products.host.pthreads --kokkos-threads="$num_threads" $arguments >> "$output_file"
+            OMP_NUM_THREADS="$num_threads" OMP_PROC_BIND=spread OMP_PLACES=threads ./array_of_dot_products.host.openmp $arguments >> "$output_file"
             popd
 
             mkdir -p HPX/build/Release
             pushd HPX/build/Release
-            cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-mavx -march=native -mtune=native -ffast-math" -DHPX_DIR="$HPX_DIR" ../..
-            make all
             ./array_of_dot_products --hpx:threads="$num_threads" $arguments >> "$output_file"
             popd
         done

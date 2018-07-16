@@ -97,13 +97,16 @@ int main(int argc, char *argv[]) {
 
   if (header) {
     hpx::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                 "input_size_1, input_size_2, num_repeats, time, result"
+                 "input_size_1, input_size_2, num_repeats, time, result, "
+                 "specific_metric, metric_name"
               << hpx::endl;
   }
   hpx::cout << hostname << ", " << std::time(nullptr) << ", "
             << hpx::resource::get_num_threads("default") << ", " << benchmark
             << ", " << runtime << ", " << len << ", " << num_vectors << ", "
-            << nrepeat << ", " << time << ", " << error << std::endl;
+            << nrepeat << ", " << time << ", " << error << ", "
+            << 1.0e-9 * num_vectors * len * 2 * 8 * nrepeat / time
+            << ", bandwidth_GB_per_s" << std::endl;
 
   return hpx::finalize();
 }

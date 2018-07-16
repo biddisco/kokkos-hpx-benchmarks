@@ -149,14 +149,16 @@ int main(int argc, char *argv[]) {
 
     if (header) {
       std::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                   "input_size_1, input_size_2, num_repeats, time, result"
+                   "input_size_1, input_size_2, num_repeats, time, result, "
+                   "specific_metric, metric_name"
                 << std::endl;
     }
     std::cout << hostname << ", " << std::time(nullptr) << ", "
               << Kokkos::DefaultExecutionSpace::concurrency() << ", "
               << benchmark << ", " << runtime << ", " << len << ", "
               << num_vectors << ", " << nrepeat << ", " << time << ", " << error
-              << std::endl;
+              << ", " << 1.0e-9 * num_vectors * len * 2 * 8 * nrepeat / time
+              << ", bandwidth_GB_per_s" << std::endl;
   }
 
   Kokkos::finalize();
