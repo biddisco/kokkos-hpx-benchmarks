@@ -2,15 +2,16 @@
 
 KOKKOS_PATH=""
 HPX_DIR=""
+HPX_CXX_FLAGS=""
 KOKKOS_ARCH=""
 KOKKOS_OPTIONS=""
 
 pushd Serial
-make KOKKOS_PATH="$KOKKOS_PATH"
+make KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
 popd
 
 pushd OpenMP
-make KOKKOS_PATH="$KOKKOS_PATH"
+make KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
 popd
 
 pushd Kokkos-Flat
@@ -36,6 +37,6 @@ popd
 
 mkdir -p HPX/build/Release
 pushd HPX/build/Release
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-mavx -march=native -mtune=native -ffast-math" -DHPX_DIR="$HPX_DIR" ../..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="$HPX_CXX_FLAGS" -DHPX_DIR="$HPX_DIR" ../..
 make all
 popd

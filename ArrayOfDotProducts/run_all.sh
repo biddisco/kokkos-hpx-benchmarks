@@ -43,7 +43,7 @@ for input_1_size in "${input_1_sizes[@]}"; do
 
             mkdir -p HPX/build/Release
             pushd HPX/build/Release
-            ./array_of_dot_products --hpx:threads="$num_threads" $arguments >> "$output_file"
+            ./array_of_dot_products --hpx:bind=numa-balanced --hpx:threads="$num_threads" $arguments >> "$output_file"
             popd
         done
     done
