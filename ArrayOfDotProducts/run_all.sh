@@ -4,7 +4,7 @@ input_1_sizes=(10000 100000)
 input_2_sizes=(10000)
 num_threads_values=(1 2 4 9 18 36)
 
-output_path=$(pwd)
+output_path=$HOME
 output_file="$output_path"/$(date +%s)-$(git rev-parse HEAD).log
 
 echo "hostname, timestamp, num_threads, benchmark, runtime, input_size_1, input_size_2, num_repeats, time, result, specific_metric, metric_name" > "$output_file"
