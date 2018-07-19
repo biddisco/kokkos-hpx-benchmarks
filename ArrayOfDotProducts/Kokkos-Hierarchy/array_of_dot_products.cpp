@@ -58,7 +58,7 @@
 #elif defined(KOKKOS_ENABLE_DEFAULT_DEVICE_TYPE_SERIAL)
 #define KOKKOS_DEVICE "Serial"
 #else
-#define KOKKOS_DEVIE "Unknown"
+#define KOKKOS_DEVICE "Unknown"
 #endif
 
 int main(int argc, char *argv[]) {
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
 
   char hostname[HOST_NAME_MAX];
   gethostname(hostname, HOST_NAME_MAX);
-  std::string benchmark = "arrays_of_dot_products";
+  std::string benchmark = "array_of_dot_products";
   std::string runtime = "Kokkos-Hierarchy-" + std::string(KOKKOS_DEVICE);
 
   Kokkos::initialize(argc, argv);

@@ -7,7 +7,7 @@ num_threads_values=(1 2 4 9 18 36)
 output_path=$(pwd)
 output_file="$output_path"/$(date +%s)-$(git rev-parse HEAD).log
 
-echo "hostname, timestamp, num_threads, benchmark, runtime, input_size_1, input_size_2, num_repeats, time, specific_metric, metric_name, result" > "$output_file"
+echo "hostname, timestamp, num_threads, benchmark, runtime, input_size_1, input_size_2, num_repeats, time, result, specific_metric, metric_name" > "$output_file"
 
 for input_1_size in "${input_1_sizes[@]}"; do
     for input_2_size in "${input_2_sizes[@]}"; do
@@ -21,6 +21,7 @@ for input_1_size in "${input_1_sizes[@]}"; do
 
         for num_threads in "${num_threads_values[@]}"; do
             echo "num_threads = $num_threads"
+
             pushd OpenMP
             OMP_NUM_THREADS="$num_threads" OMP_PROC_BIND=spread OMP_PLACES=threads ./array_of_dot_products.host $arguments >> "$output_file"
             popd

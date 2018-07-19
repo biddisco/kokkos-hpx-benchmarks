@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
   char hostname[HOST_NAME_MAX];
   gethostname(hostname, HOST_NAME_MAX);
-  std::string benchmark = "arrays_of_dot_products";
+  std::string benchmark = "array_of_dot_products";
   std::string runtime = "HPX";
 
   // allocate space for vectors to do num_vectors dot products of length len
