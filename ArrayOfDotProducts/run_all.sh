@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-input_1_sizes=(10000 100000)
-input_2_sizes=(10000)
+input_1_sizes=(10000)
+input_2_sizes=(10 100 1000 10000 100000)
 num_threads_values=(1 2 4 9 18 36)
 
 output_path=$HOME
@@ -24,6 +24,10 @@ for input_1_size in "${input_1_sizes[@]}"; do
 
             pushd OpenMP
             OMP_NUM_THREADS="$num_threads" OMP_PROC_BIND=spread OMP_PLACES=threads ./array_of_dot_products.host $arguments >> "$output_file"
+            popd
+
+            pushd Kokkos-Minmal-HPX
+            ./array_of_dot_products.host $arguments --hpx:bind=numa-balanced --hpx:threads="$num_threads" >> "$output_file"
             popd
 
             pushd Kokkos-Minimal
