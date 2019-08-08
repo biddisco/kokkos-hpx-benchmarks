@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 
-KOKKOS_PATH=""
-HPX_DIR=""
-HPX_CXX_FLAGS=""
-KOKKOS_ARCH=""
-KOKKOS_OPTIONS=""
+source "../build_settings.sh"
 
 pushd Serial
 make KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
 popd
 
 pushd Kokkos
-make KOKKOS_DEVICES=Pthreads KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_USE_TPLS="hwloc" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
-cp parallel_scan.host parallel_scan.host.pthreads
-make KOKKOS_DEVICES=OpenMP KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
+make -j20 KOKKOS_DEVICES=OpenMP KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
 cp parallel_scan.host parallel_scan.host.openmp
+make -j20 KOKKOS_DEVICES=HPX KOKKOS_ARCH="$KOKKOS_ARCH" KOKKOS_PATH="$KOKKOS_PATH" KOKKOS_OPTIONS="$KOKKOS_OPTIONS"
+cp parallel_scan.host parallel_scan.host.hpx
 popd
 
 mkdir -p HPX/build/Release

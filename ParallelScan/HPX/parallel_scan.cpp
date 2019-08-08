@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
                (strcmp(argv[i], "-help") == 0)) {
       printf("ParallelScan Options:\n");
       printf("  -length (-l) <int>:       vector length (default: 10000)\n");
-      printf("  -nrepeat <int>:           number of repitions (default: 10)\n");
+      printf("  -nrepeat <int>:           number of repetitions (default: 10)\n");
       printf("  -help (-h):               print this message\n");
     }
   }
@@ -58,16 +58,15 @@ int main(int argc, char *argv[]) {
                 1.0e-6 * (end.tv_usec - begin.tv_usec);
 
   if (header) {
-    hpx::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                 "input_size_1, input_size_2, num_repeats, time, result, "
-                 "specific_metric, metric_name"
+    hpx::cout << "hostname,timestamp,num_threads,benchmark,runtime,"
+                 "input_size_1,input_size_2,num_repeats,time,result,"
+                 "specific_metric,metric_name"
               << hpx::endl;
   }
-  hpx::cout << hostname << ", " << std::time(nullptr) << ", "
-            << hpx::resource::get_num_threads("default") << ", " << benchmark
-            << ", " << runtime << ", " << len << ", " << 0 << ", " << nrepeat
-            << ", " << time << ", " << b[len - 1] << ", " << 0 << ", x"
-            << std::endl;
+  hpx::cout << hostname << "," << std::time(nullptr) << ","
+            << hpx::resource::get_num_threads("default") << "," << benchmark
+            << "," << runtime << "," << len << "," << 0 << "," << nrepeat << ","
+            << time << "," << b[len - 1] << "," << 0 << ",x" << std::endl;
 
   return hpx::finalize();
 }

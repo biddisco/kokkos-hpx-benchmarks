@@ -1,5 +1,5 @@
 KOKKOS_PATH = ${HOME}/kokkos-tutorial/kokkos
-KOKKOS_DEVICES = "OpenMP"
+KOKKOS_DEVICES = ""
 EXE_NAME = "parallel_scan"
 
 SRC = $(wildcard *.cpp)

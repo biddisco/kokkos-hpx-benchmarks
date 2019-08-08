@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3.2)
-project(arrays_of_dot_products CXX)
+project(parallel_scan CXX)
 
 find_package(HPX REQUIRED)
 
