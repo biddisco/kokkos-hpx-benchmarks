@@ -9,3 +9,5 @@ build
 *.out
 *.log
 *.host*
+*.bak
+KokkosCore_config.h
