@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(argv[i], "-nrepeat") == 0) {
       nrepeat = atoi(argv[++i]);
     } else if (strcmp(argv[i], "-header") == 0) {
-        header = true;
+      header = true;
     } else if ((strcmp(argv[i], "-h") == 0) ||
                (strcmp(argv[i], "-help") == 0)) {
       printf("ParallelFor Options:\n");
@@ -58,13 +58,13 @@ int main(int argc, char *argv[]) {
                 1.0e-6 * (end.tv_usec - begin.tv_usec);
 
   if (header) {
-    std::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                 "input_size_1, input_size_2, num_repeats, time, result, "
-                 "specific_metric, metric_name"
+    std::cout << "hostname,timestamp,num_threads,benchmark,runtime,"
+                 "input_size_1,input_size_2,num_repeats,time, result,"
+                 "specific_metric,metric_name"
               << std::endl;
   }
-  std::cout << hostname << ", " << std::time(nullptr) << ", " << 1 << ", "
-            << benchmark << ", " << runtime << ", " << len << ", " << 0 << ", "
-            << nrepeat << ", " << time << ", " << a[len - 1] << ", " << 0
-            << ", x" << std::endl;
+  std::cout << hostname << "," << std::time(nullptr) << "," << 1 << ","
+            << benchmark << "," << runtime << "," << len << "," << 0 << ","
+            << nrepeat << "," << time << "," << a[len - 1] << "," << 0 << ",x"
+            << std::endl;
 }

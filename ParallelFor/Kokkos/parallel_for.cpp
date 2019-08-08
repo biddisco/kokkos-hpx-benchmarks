@@ -12,6 +12,9 @@
 #define KOKKOS_DEVICE "OpenMP"
 #elif defined(KOKKOS_ENABLE_DEFAULT_DEVICE_TYPE_OPENMPTARGET)
 #define KOKKOS_DEVICE "OpenMPTarget"
+#elif defined(KOKKOS_ENABLE_DEFAULT_DEVICE_TYPE_HPX)
+#define KOKKOS_DEVICE "HPX"
+#include <hpx/hpx_main.hpp>
 #elif defined(KOKKOS_ENABLE_DEFAULT_DEVICE_TYPE_THREADS)
 #define KOKKOS_DEVICE "Threads"
 #elif defined(KOKKOS_ENABLE_DEFAULT_DEVICE_TYPE_SERIAL)
@@ -70,16 +73,16 @@ int main(int argc, char *argv[]) {
                   1.0e-6 * (end.tv_usec - begin.tv_usec);
 
     if (header) {
-      std::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                   "input_size_1, input_size_2, num_repeats, time, result, "
-                   "specific_metric, metric_name"
+      std::cout << "hostname,timestamp,num_threads,benchmark,runtime,"
+                   "input_size_1,input_size_2,num_repeats,time,result,"
+                   "specific_metric,metric_name"
                 << std::endl;
     }
-    std::cout << hostname << ", " << std::time(nullptr) << ", "
-              << Kokkos::DefaultExecutionSpace::concurrency() << ", "
-              << benchmark << ", " << runtime << ", " << len << ", " << 0
-              << ", " << nrepeat << ", " << time << ", " << a(len - 1) << ", "
-              << 0 << ", x" << std::endl;
+    std::cout << hostname << "," << std::time(nullptr) << ","
+              << Kokkos::DefaultExecutionSpace::concurrency() << ","
+              << benchmark << "," << runtime << "," << len << "," << 0 << ","
+              << nrepeat << "," << time << "," << a(len - 1) << "," << 0 << ",x"
+              << std::endl;
   }
 
   Kokkos::finalize();

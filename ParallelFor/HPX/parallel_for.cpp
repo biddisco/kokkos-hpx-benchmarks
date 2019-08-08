@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(argv[i], "-nrepeat") == 0) {
       nrepeat = atoi(argv[++i]);
     } else if (strcmp(argv[i], "-header") == 0) {
-        header = true;
+      header = true;
     } else if ((strcmp(argv[i], "-h") == 0) ||
                (strcmp(argv[i], "-help") == 0)) {
       printf("ParallelFor Options:\n");
@@ -38,17 +38,20 @@ int main(int argc, char *argv[]) {
 
   std::vector<double> a(len);
 
-  hpx::parallel::for_loop(hpx::parallel::execution::par, 0, len,
-                          [&a](const size_t i) { a[i] = i; });
+  hpx::parallel::for_loop(hpx::parallel::execution::par.with(
+                              hpx::parallel::execution::static_chunk_size()),
+                          0, len, [&a](const size_t i) { a[i] = i; });
 
   struct timeval begin, end;
 
   gettimeofday(&begin, NULL);
 
   for (int repeat = 0; repeat < nrepeat; repeat++) {
-    hpx::parallel::for_loop(
-        hpx::parallel::execution::par, 0, len,
-        [&a](const size_t i) { a[i] = a[i] * std::pow(5.3, 3) / 3.14; });
+    hpx::parallel::for_loop(hpx::parallel::execution::par.with(
+                                hpx::parallel::execution::static_chunk_size()),
+                            0, len, [&a](const size_t i) {
+                              a[i] = a[i] * std::pow(5.3, 3) / 3.14;
+                            });
   }
 
   gettimeofday(&end, NULL);
@@ -57,15 +60,16 @@ int main(int argc, char *argv[]) {
                 1.0e-6 * (end.tv_usec - begin.tv_usec);
 
   if (header) {
-    hpx::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                 "input_size_1, input_size_2, num_repeats, time, result, "
-                 "specific_metric, metric_name"
+    hpx::cout << "hostname,timestamp,num_threads,benchmark,runtime,"
+                 "input_size_1,input_size_2,num_repeats,time,result,"
+                 "specific_metric,metric_name"
               << hpx::endl;
   }
-  hpx::cout << hostname << ", " << std::time(nullptr) << ", "
-            << hpx::resource::get_num_threads("default") << ", " << benchmark
-            << ", " << runtime << ", " << len << ", " << 0 << ", " << nrepeat
-            << ", " << time << ", " << a[len - 1] << ", " << 0 << ", x" << std::endl;
+  hpx::cout << hostname << "," << std::time(nullptr) << ","
+            << hpx::resource::get_num_threads("default") << "," << benchmark
+            << "," << runtime << "," << len << "," << 0 << "," << nrepeat
+            << "," << time << "," << a[len - 1] << "," << 0 << ",x"
+            << std::endl;
 
   return hpx::finalize();
 }
