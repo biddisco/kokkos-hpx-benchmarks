@@ -58,15 +58,15 @@ int main(int argc, char *argv[]) {
                 1.0e-6 * (end.tv_usec - begin.tv_usec);
 
   if (header) {
-    hpx::cout << "hostname, timestamp, num_threads, benchmark, runtime "
-                 "input_size_1, input_size_2, num_repeats, time, result, "
-                 "specific_metric, metric_name"
+    hpx::cout << "hostname,timestamp,num_threads,benchmark,runtime,"
+                 "input_size_1,input_size_2,num_repeats,time,result,"
+                 "specific_metric,metric_name"
               << hpx::endl;
   }
-  hpx::cout << hostname << ", " << std::time(nullptr) << ", "
-            << hpx::resource::get_num_threads("default") << ", " << benchmark
-            << ", " << runtime << ", " << len << ", " << 0 << ", " << nrepeat
-            << ", " << time << ", " << sum << ", " << 0 << ", x"
+  hpx::cout << hostname << "," << std::time(nullptr) << ","
+            << hpx::resource::get_num_threads("default") << "," << benchmark
+            << "," << runtime << "," << len << "," << 0 << "," << nrepeat
+            << "," << time << "," << sum << "," << 0 << ",x"
             << std::endl;
 
   return hpx::finalize();
