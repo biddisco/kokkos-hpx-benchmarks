@@ -1,0 +1,96 @@
+#!/bin/bash
+#SBATCH --job-name=schedulers
+#SBATCH --output=slurm.%j.out
+#SBATCH --error=slurm.%j.err
+#SBATCH --nodes=1
+#SBATCH --time=01:00:00
+#SBATCH --exclusive
+#SBATCH --distribution=cyclic
+#SBATCH --constraint=mc
+#SBATCH --partition=normal
+
+# edit this to select a machine from the list before running on machine X
+# supported machines so far are daint, ault, tave, jbs76
+
+MACHINE=${HOSTNAME}
+echo "# Running on $MACHINE"
+
+step1=1
+step2=2
+
+if [[ $MACHINE =~ ault* ]];
+then
+  echo "# AULT config selected"
+  LSTOPO=/apps/ault/UES/easybuild/tools/software/hwloc/2.0.3/bin/lstopo-no-graphics
+  build_dir=/users/biddisco/build/hpx
+elif [[ $MACHINE =~ daint* || $MACHINE =~ nid* ]];
+then
+  echo "# DAINT config selected"
+  LSTOPO=/usr/bin/lstopo-no-graphics
+  build_dir='/scratch/snx3000/biddisco/build/hpx'
+elif [[ $MACHINE =~ tave* ]];
+then
+  echo "# TAVE config selected"
+  LSTOPO=/usr/bin/lstopo-no-graphics
+  build_dir=/scratch/snx2000/biddisco/build/hpx
+elif [[ $MACHINE =~ jb-s76 ]];
+then
+  echo "# LAPTOP config selected"
+  LSTOPO=/home/biddisco/apps/hwloc-master/bin/lstopo-no-graphics
+  build_dir='/home/biddisco/build/hpx'
+  step2=1
+else
+  echo "# Unknown machine setup selected $MACHINE"
+fi
+
+if [ "$1" == "" ];
+then
+  INFO="none"
+else
+  INFO=$1
+fi
+
+
+sockets=$( $LSTOPO | grep Package | wc -l )
+numanodes=$( $LSTOPO | grep NUMANode | wc -l )
+cores=$( $LSTOPO | grep Core | wc -l )
+pus=$( $LSTOPO | grep ' PU' | wc -l )
+#
+echo "# There are $sockets sockets, $numanodes NUMA domains, $cores cores, $pus pus"
+
+# output_file="$output_path"/$(date +%s)-$(git rev-parse HEAD).log
+input_1_sizes=(100000 1000000 10000000 100000000 1000000000)
+repeats=25
+
+info="for a in {1..100}; do psu -lf | grep future_overhead_test | awk '{print \$4}' | xargs kill -9 ; done"
+printf "# NB. to kill spawned tasks try \n# $info\n\n"
+
+HPX_ARGS="-Ihpx.stacks.use_guard_pages=0"
+
+echo "# hostname, timestamp, num_threads, benchmark, runtime, input_size_1, input_size_2, num_repeats, time, result, specific_metric, metric_name"
+# > "$output_file"
+for l in 1 $(seq 1 $repeats)
+do
+  for length in "${input_1_sizes[@]}"
+  do
+    for t in $(seq 1 $step1 $cores) $(seq $(($cores + $step2)) $step2 $pus)
+    do
+        rep=$((1000000000 / $length))
+        arguments="-l $length -nrepeat $rep"
+
+        CMD="@BINARY_DIR@/parallel_for_serial $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        CMD="env OMP_NUM_THREADS=$t OMP_PROC_BIND=spread OMP_PLACES=threads @BINARY_DIR@/parallel_for_openmp $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        CMD="@BINARY_DIR@/parallel_for_hpx --kokkos-threads=$t $arguments"
+        echo -e "# $CMD"
+        $CMD
+        echo -e "\n"
+    done
+  done
+done
+

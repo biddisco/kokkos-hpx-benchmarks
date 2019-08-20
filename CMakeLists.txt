@@ -168,3 +168,8 @@ add_subdirectory(ParallelFor)
 add_subdirectory(ParallelReduce)
 add_subdirectory(ParallelScan)
 
+# ---------------------------------------------------------------------------
+# Scripts to run stuff
+# ---------------------------------------------------------------------------
+add_subdirectory(scripts)
+
