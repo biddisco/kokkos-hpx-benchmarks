@@ -7,6 +7,7 @@
 #include <ctime>
 #include <sys/time.h>
 #include <unistd.h>
+#include <chrono>
 
 #if defined(KOKKOS_ENABLE_DEFAULT_DEVICE_TYPE_OPENMP)
 #define KOKKOS_DEVICE "OpenMP"
@@ -57,9 +58,8 @@ int main(int argc, char *argv[]) {
 
     Kokkos::parallel_for(len, KOKKOS_LAMBDA(const int &i) { a(i) = i; });
 
-    struct timeval begin, end;
-
-    gettimeofday(&begin, NULL);
+    using namespace std::chrono;
+    const auto before = system_clock::now();
 
     for (int repeat = 0; repeat < nrepeat; repeat++) {
       Kokkos::parallel_for(len, KOKKOS_LAMBDA(const int &i) {
@@ -67,10 +67,7 @@ int main(int argc, char *argv[]) {
       });
     }
 
-    gettimeofday(&end, NULL);
-
-    double time = 1.0 * (end.tv_sec - begin.tv_sec) +
-                  1.0e-6 * (end.tv_usec - begin.tv_usec);
+    const duration<double> duration = system_clock::now() - before;
 
     if (header) {
       std::cout << "hostname, timestamp, num_threads, benchmark, runtime "
@@ -81,7 +78,7 @@ int main(int argc, char *argv[]) {
     std::cout << hostname << ", " << std::time(nullptr) << ", "
               << Kokkos::DefaultExecutionSpace::concurrency() << ", "
               << benchmark << ", " << runtime << ", " << len << ", " << 0
-              << ", " << nrepeat << ", " << time << ", " << a(len - 1) << ", "
+              << ", " << nrepeat << ", " << duration.count() << ", " << a(len - 1) << ", "
               << 0 << ", x" << std::endl;
   }
 

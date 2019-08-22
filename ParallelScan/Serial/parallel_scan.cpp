@@ -9,6 +9,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <vector>
+#include <chrono>
 
 int main(int argc, char *argv[]) {
   int len = 10000;
@@ -43,9 +44,8 @@ int main(int argc, char *argv[]) {
     a[i] = i;
   }
 
-  struct timeval begin, end;
-
-  gettimeofday(&begin, NULL);
+  using namespace std::chrono;
+  const auto before = system_clock::now();
 
   for (int repeat = 0; repeat < nrepeat; repeat++) {
     b[0] = a[0];
@@ -54,10 +54,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  gettimeofday(&end, NULL);
-
-  double time = 1.0 * (end.tv_sec - begin.tv_sec) +
-                1.0e-6 * (end.tv_usec - begin.tv_usec);
+  const duration<double> duration = system_clock::now() - before;
 
   if (header) {
     std::cout << "hostname, timestamp, num_threads, benchmark, runtime "
@@ -67,6 +64,6 @@ int main(int argc, char *argv[]) {
   }
   std::cout << hostname << ", " << std::time(nullptr) << ", " << 1 << ", "
             << benchmark << ", " << runtime << ", " << len << ", " << 0 << ", "
-            << nrepeat << ", " << time << ", " << b[len - 1] << ", " << 0
+            << nrepeat << ", " << duration.count() << ", " << b[len - 1] << ", " << 0
             << ", x" << std::endl;
 }
