@@ -3,12 +3,9 @@
 # ---------------------------------------------------------------------------
 add_executable(parallel_for_serial Serial/parallel_for.cpp)
 
-add_executable(parallel_for_openmp Kokkos/parallel_for.cpp)
-target_compile_definitions(parallel_for_openmp PUBLIC KOKKOS_ARCH=${DEFAULT_HOST_ARCH})
-target_include_directories(parallel_for_openmp PUBLIC ${kokkos_INCLUDES})
-target_link_libraries(parallel_for_openmp PUBLIC kokkos-OpenMP)
-
-add_executable(parallel_for_hpx Kokkos/parallel_for.cpp)
-target_compile_definitions(parallel_for_hpx PUBLIC KOKKOS_ARCH=${DEFAULT_HOST_ARCH})
-target_include_directories(parallel_for_hpx PUBLIC ${kokkos_INCLUDES})
-target_link_libraries(parallel_for_hpx PUBLIC kokkos-HPX)
+foreach(dev_ ${benchmark_kokkos_devices})
+  string(TOLOWER ${dev_} devlc_)
+  set(targetname parallel_for_kokkos_${devlc_})
+  add_executable(${targetname} Kokkos/parallel_for.cpp)
+  target_link_libraries(${targetname}      PUBLIC kokkos-${dev_})
+endforeach()

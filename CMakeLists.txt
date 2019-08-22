@@ -36,7 +36,7 @@ if(hostname MATCHES "unknown" OR hostname MATCHES "No")
 endif()
 
 if(hostname MATCHES jb-s76)
-  set(DEFAULT_HOST_ARCH   SKX)
+  set(DEFAULT_HOST_ARCH   HSW)
   set(DEFAULT_DEVICE_ARCH Pascal60)
 elseif(hostname MATCHES daint)
   # please set other machine defaults
@@ -67,13 +67,13 @@ endif()
 # Add Kokkos (core/kernels) as subdirectories
 # ---------------------------------------------------------
 # General options for Kokkos
-set(Kokkos_CXX_STANDARD           14)
-#set(Kokkos_ENABLE_TASKDAG         0)
-# set(KOKKOS_ENABLE_DEPRECATED_CODE 1)
+set(Kokkos_CXX_STANDARD                    14)
+set(Kokkos_ENABLE_AGGRESSIVE_VECTORIZATION 1)
+set(Kokkos_ARCH                            ${DEFAULT_HOST_ARCH})
 
 # Backends we want to use
-set(Kokkos_ENABLE_SERIAL          1)
-set(benchmark_kokkos_devices OpenMP HPX)
+set(Kokkos_ENABLE_SERIAL     1)
+set(benchmark_kokkos_devices SERIAL PTHREAD OpenMP HPX)
 
 include(FetchContent)
 

@@ -78,17 +78,60 @@ do
         rep=$((1000000000 / $length))
         arguments="-l $length -nrepeat $rep"
 
+        ############################ 
+        # parallel for
         CMD="@BINARY_DIR@/parallel_for_serial $arguments"
         echo -e "# $CMD"
         $CMD
 
-        CMD="env OMP_NUM_THREADS=$t OMP_PROC_BIND=spread OMP_PLACES=threads @BINARY_DIR@/parallel_for_openmp $arguments"
+        CMD="env OMP_NUM_THREADS=$t OMP_PROC_BIND=spread OMP_PLACES=threads @BINARY_DIR@/parallel_for_kokkos_openmp $arguments"
         echo -e "# $CMD"
         $CMD
 
-        CMD="@BINARY_DIR@/parallel_for_hpx --kokkos-threads=$t $arguments"
+        CMD="@BINARY_DIR@/parallel_for_kokkos_hpx --kokkos-threads=$t $arguments"
         echo -e "# $CMD"
         $CMD
+
+         CMD="@BINARY_DIR@/parallel_for_kokkos_pthread --kokkos-threads=$t $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        ############################ 
+        # parallel reduce
+        CMD="@BINARY_DIR@/parallel_reduce_serial $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        CMD="env OMP_NUM_THREADS=$t OMP_PROC_BIND=spread OMP_PLACES=threads @BINARY_DIR@/parallel_reduce_kokkos_openmp $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        CMD="@BINARY_DIR@/parallel_reduce_kokkos_hpx --kokkos-threads=$t $arguments"
+        echo -e "# $CMD"
+        $CMD
+        
+        CMD="@BINARY_DIR@/parallel_reduce_kokkos_pthread --kokkos-threads=$t $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        ############################ 
+        # parallel scan
+        CMD="@BINARY_DIR@/parallel_scan_serial $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        CMD="env OMP_NUM_THREADS=$t OMP_PROC_BIND=spread OMP_PLACES=threads @BINARY_DIR@/parallel_scan_kokkos_openmp $arguments"
+        echo -e "# $CMD"
+        $CMD
+
+        CMD="@BINARY_DIR@/parallel_scan_kokkos_hpx --kokkos-threads=$t $arguments"
+        echo -e "# $CMD"
+        $CMD
+        
+        CMD="@BINARY_DIR@/parallel_scan_kokkos_pthread --kokkos-threads=$t $arguments"
+        echo -e "# $CMD"
+        $CMD
+       
         echo -e "\n"
     done
   done

@@ -28,7 +28,7 @@ execute_process(COMMAND "${CMAKE_COMMAND}" -E make_directory "${BENCHMARK_SCRIPT
 #--------------------------------------------------
 # Slurm script generator for benchmarks
 #--------------------------------------------------
-set(SCRIPTS "parallel_for")
+set(SCRIPTS "parallel_tests")
 
 foreach(script ${SCRIPTS})
   ADD_CUSTOM_COMMAND(
@@ -37,7 +37,7 @@ foreach(script ${SCRIPTS})
     ARGS      -DSCRIPT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
               -DSCRIPT_NAME=${script}
               -DSCRIPT_DEST_DIR="${BENCHMARK_SCRIPTS_PATH}"
-              -DBINARY_DIR="${CMAKE_BINARY_DIR}/bin"
+              -DBINARY_DIR=${CMAKE_BINARY_DIR}/bin
               -P "${CMAKE_CURRENT_SOURCE_DIR}/copy_script.cmake"
     OUTPUT    "${BENCHMARK_SCRIPTS_PATH}/${script}.sh"
     VERBATIM
@@ -47,3 +47,4 @@ foreach(script ${SCRIPTS})
     DEPENDS "${BENCHMARK_SCRIPTS_PATH}/${script}.sh"
   )
 endforeach(script)
+
