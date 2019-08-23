@@ -80,7 +80,7 @@ include(FetchContent)
 FetchContent_Declare(
   kokkos
   GIT_REPOSITORY   git@github.com:biddisco/kokkos.git
-  GIT_TAG          cmake-backends
+  GIT_TAG          cmake-hpx-merge
 )
 
 FetchContent_Declare(
