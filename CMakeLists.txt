@@ -39,6 +39,8 @@ if(hostname MATCHES jb-s76)
   set(DEFAULT_HOST_ARCH   HSW)
   set(DEFAULT_DEVICE_ARCH Pascal60)
 elseif(hostname MATCHES daint)
+  set(DEFAULT_HOST_ARCH   BDW)
+  set(DEFAULT_DEVICE_ARCH Pascal60)
   # please set other machine defaults
 endif()
 
