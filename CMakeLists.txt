@@ -68,6 +68,14 @@ endif()
 # ---------------------------------------------------------
 # Add Kokkos (core/kernels) as subdirectories
 # ---------------------------------------------------------
+# Allow a local copy of kokkos src to be used instead of
+# cloning it into the build dir
+option(USE_LOCAL_KOKKOS_SOURCE_PATH OFF)
+if(USE_LOCAL_KOKKOS_SOURCE_PATH)
+  find_file(KOKKOS_LOCAL_SOURCE_PATH CMakeLists.txt /home/biddisco/src/kokkos/kokkos)
+  set(FETCHCONTENT_SOURCE_DIR_KOKKOS ${KOKKOS_LOCAL_SOURCE_PATH})
+endif()
+
 # General options for Kokkos
 set(Kokkos_CXX_STANDARD                    14)
 set(Kokkos_ENABLE_AGGRESSIVE_VECTORIZATION 1)
