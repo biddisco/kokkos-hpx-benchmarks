@@ -77,9 +77,10 @@ if(USE_LOCAL_KOKKOS_SOURCE_PATH)
 endif()
 
 # General options for Kokkos
-set(Kokkos_CXX_STANDARD                    14)
+set(Kokkos_CXX_STANDARD  17 CACHE STRING "C++ standard")
+set(Kokkos_ENABLE_HWLOC  1)
+set(Kokkos_ARCH          ${DEFAULT_HOST_ARCH})
 set(Kokkos_ENABLE_AGGRESSIVE_VECTORIZATION 1)
-set(Kokkos_ARCH                            ${DEFAULT_HOST_ARCH})
 
 # Backends we want to use
 set(Kokkos_ENABLE_SERIAL     1)
