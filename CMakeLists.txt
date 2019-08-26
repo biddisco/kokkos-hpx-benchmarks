@@ -77,7 +77,7 @@ if(USE_LOCAL_KOKKOS_SOURCE_PATH)
 endif()
 
 # General options for Kokkos
-set(Kokkos_CXX_STANDARD  17 CACHE STRING "C++ standard")
+set(Kokkos_CXX_STANDARD  ${HPX_CXX_STANDARD} CACHE STRING "C++ standard")
 set(Kokkos_ENABLE_HWLOC  1)
 set(Kokkos_ARCH          ${DEFAULT_HOST_ARCH})
 set(Kokkos_ENABLE_AGGRESSIVE_VECTORIZATION 1)
@@ -114,7 +114,6 @@ if (NOT kokkos_POPULATED)
     endforeach()
     # turn on just one
     set(Kokkos_ENABLE_${device1_} 1)
-    message("Kokkos_ENABLE_${device1_} 1")
     set(KOKKOS_LIB_SUFFIX "-${device1_}")
     add_subdirectory(
         ${kokkos_SOURCE_DIR}
