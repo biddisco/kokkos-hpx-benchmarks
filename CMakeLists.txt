@@ -177,6 +177,7 @@ set(kokkos_INCLUDES
 add_subdirectory(ParallelFor)
 add_subdirectory(ParallelReduce)
 add_subdirectory(ParallelScan)
+add_subdirectory(Overhead)
 
 # ---------------------------------------------------------------------------
 # Scripts to run stuff
