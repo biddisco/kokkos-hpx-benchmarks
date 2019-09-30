@@ -79,12 +79,12 @@ endif()
 # General options for Kokkos
 set(Kokkos_CXX_STANDARD  ${HPX_CXX_STANDARD} CACHE STRING "C++ standard")
 set(Kokkos_ENABLE_HWLOC  0)
-set(Kokkos_ARCH          ${DEFAULT_HOST_ARCH})
+#set(Kokkos_ARCH          ${DEFAULT_HOST_ARCH})
 set(Kokkos_ENABLE_AGGRESSIVE_VECTORIZATION 1)
 
 # Backends we want to use
 set(Kokkos_ENABLE_SERIAL     1)
-set(benchmark_kokkos_devices SERIAL PTHREAD OpenMP HPX)
+set(benchmark_kokkos_devices SERIAL PTHREAD OPENMP HPX)
 
 include(FetchContent)
 
